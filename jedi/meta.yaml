@@ -1,17 +1,18 @@
 package:
   name: jedi
-  version: 0.7.0
+  version: !!str 0.8.1
 
 source:
-  fn: jedi-0.7.0.tar.gz
-  url: https://pypi.python.org/packages/source/j/jedi/jedi-0.7.0.tar.gz
-  md5: fb4a452b6baa09ce7ced445e58625d25
+  fn: jedi-0.8.1-final0.tar.gz
+  url: https://pypi.python.org/packages/source/j/jedi/jedi-0.8.1-final0.tar.gz
+  md5: e4db996421a640d50f559587e805412b
 #  patches:
    # List any patch files here
    # - fix.patch
 
 # build:
-  # entry_points:
+  #preserve_egg_dir: True
+  #entry_points:
     # Put any entry points (scripts to be generated automatically) here. The
     # syntax is module:function.  For example
     #
@@ -27,7 +28,7 @@ source:
 requirements:
   build:
     - python
-    - distribute
+    - setuptools
 
   run:
     - python
@@ -36,8 +37,12 @@ test:
   # Python imports
   imports:
     - jedi
+    - jedi.api
+    - jedi.evaluate
+    - jedi.evaluate.compiled
+    - jedi.parser
 
-  # commands:
+  #commands:
     # You can put test commands to be run here.  Use this to test that the
     # entry points work.
 
@@ -46,12 +51,13 @@ test:
   # at test time.
 
   # requires:
-    # Put any test requirements here.  For example
+    # Put any additional test requirements here.  For example
     # - nose
 
 about:
   home: https://github.com/davidhalter/jedi
-  license: GNU Library or Lesser General Public License (LGPL)
+  license:  MIT License
+  summary: 'An autocompletion tool for Python that can be used for text editors.'
 
 # See
 # http://docs.continuum.io/conda/build.html for

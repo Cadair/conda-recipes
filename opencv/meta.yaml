@@ -1,29 +1,34 @@
+# Tested on Mac OS X 10.9 using clang compiler provided by XCode
 package:
-  name: opencv
-  version: 2.4.5
+    name: opencv
+    version: 2.4.9
 
 source:
-  fn: opencv-2.4.5.tar.gz
-  url: http://filer/src/opencv-2.4.5.tar.gz
-  md5: 8eac87462c7bec8b89021b723207c623
+    fn: opencv-2.4.9.zip
+    url: http://downloads.sourceforge.net/project/opencvlibrary/opencv-unix/2.4.9/opencv-2.4.9.zip
 
 build:
-  number: 1
+    number: 0
 
 requirements:
-  build:
-    - cmake        [unix]
-    - numpy
-    - jpeg
-    - zlib
-    - libpng
-  run:
-    - python
-    - numpy
-    - jpeg
-    - zlib         [unix]
-    - libpng
+    build:
+        - cmake
+        - numpy
+        - jpeg
+        - zlib
+        - libpng
+        - python
+    run:
+        - python
+        - numpy
+        - jpeg
+        - zlib
+        - libpng
+test:
+    imports:
+      - cv2
+      - cv2.cv
 
 about:
-  home: http://opencv.willowgarage.com/wiki/
-  license: BSD
+    home: http://opencv.org/
+    license: BSD

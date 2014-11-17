@@ -1,0 +1,56 @@
+package:
+  name: r
+  version: 3.1.2
+
+source:
+  fn: R-3.1.2.tar.gz
+  url: http://cran.cnr.berkeley.edu/src/base/R-3/R-3.1.2.tar.gz
+  sha1: 93809368e5735a630611633ac1fa99010020c5d6
+  patches:
+    - share-make-vars.mk.patch
+
+build:
+  rpaths:
+    - lib/R/lib/
+    - lib/
+  number: 1
+
+requirements:
+  build:
+    - readline
+    - ncurses
+    - tk
+    - zlib
+    - gsl
+    - cairo     # [linux]
+    - pango     # [linux]
+    - jpeg
+    - libpng
+    - libtiff
+    - libxml2 # Not really sure if libxml2 is needed
+    - gcc
+    - pcre
+
+  run:
+    - readline
+    - ncurses
+    - tk
+    - zlib
+    - cairo     # [linux]
+    - pango     # [linux]
+    - jpeg
+    - libpng
+    - libtiff
+    - libxml2
+    - gcc
+    - pcre
+
+test:
+  commands:
+    - R -h
+    - R --version
+    - Rscript --version
+
+about:
+  home: http://www.r-project.org/
+  license: GPL

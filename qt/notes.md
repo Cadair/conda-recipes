@@ -9,3 +9,5 @@ Packages needed in Ubuntu:
 - chrpath
 - libxrender-dev
 - freeglut3-dev
+- libgtk2.0-dev (to enable gtkstyle)
+- libdbus-1-dev
