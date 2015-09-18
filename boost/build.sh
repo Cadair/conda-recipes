@@ -8,37 +8,60 @@
 # Hints for OSX:
 # http://stackoverflow.com/questions/20108407/how-do-i-compile-boost-for-os-x-64b-platforms-with-stdlibc
 
-# Build dependencies:
-# - bzip2-devel
+set -x -e
 
-mkdir -vp ${PREFIX}/bin;
+INCLUDE_PATH="${PREFIX}/include"
+LIBRARY_PATH="${PREFIX}/lib"
 
-if [ `uname` == Darwin ]; then
-  MACOSX_VERSION_MIN=10.8
-  CXXFLAGS="-mmacosx-version-min=${MACOSX_VERSION_MIN}"
-  CXXFLAGS="${CXXFLAGS} -std=c++11 -stdlib=libc++"
-  LINKFLAGS="-mmacosx-version-min=${MACOSX_VERSION_MIN} "
-  LINKFLAGS="${LINKFLAGS} -stdlib=libc++"
+if [ "$(uname)" == "Darwin" ]; then
+    MACOSX_VERSION_MIN=10.8
+    CXXFLAGS="-mmacosx-version-min=${MACOSX_VERSION_MIN}"
+    CXXFLAGS="${CXXFLAGS} -std=c++11 -stdlib=libc++"
+    LINKFLAGS="-mmacosx-version-min=${MACOSX_VERSION_MIN}"
+    LINKFLAGS="${LINKFLAGS} -stdlib=libc++ -L${LIBRARY_PATH}"
 
-  B2ARGS="toolset=clang"
+    ./bootstrap.sh \
+        --prefix="${PREFIX}" \
+        --with-python="${PYTHON}" \
+        --with-icu="${PREFIX}" \
+        | tee bootstrap.log 2>&1
 
-  ./bootstrap.sh \
-    --prefix="${PREFIX}/" --libdir="${PREFIX}/lib/" \
-    | tee bootstrap.log 2>&1
-  ./b2 \
-    variant=release address-model=64 architecture=x86 \
-    threading=multi link=shared ${B2ARGS} \
-    cxxflags="${CXXFLAGS}" linkflags="${LINKFLAGS}" \
-    install | tee b2.log 2>&1
-else
-  B2ARGS="toolset=gcc"
-
-  ./bootstrap.sh \
-    --prefix="${PREFIX}/" --libdir="${PREFIX}/lib/" \
-    | tee bootstrap.log 2>&1
-  ./b2 \
-    variant=release address-model=64 architecture=x86 \
-    threading=multi link=shared ${B2ARGS} \
-    install | tee b2.log 2>&1
+    ./b2 -q \
+        variant=release \
+        address-model=64 \
+        architecture=x86 \
+        debug-symbols=off \
+        threading=multi \
+        link=shared \
+        toolset=clang \
+        include="${INCLUDE_PATH}" \
+        cxxflags="${CXXFLAGS}" \
+        linkflags="${LINKFLAGS}" \
+        -j"$(sysctl -n hw.ncpu)" \
+        install | tee b2.log 2>&1
 fi
 
+if [ "$(uname)" == "Linux" ]; then
+    ./bootstrap.sh \
+        --prefix="${PREFIX}" \
+        --with-python="${PYTHON}" \
+        --with-python-root="${PREFIX} : ${PREFIX}/include/python${PY_VER}m ${PREFIX}/include/python${PY_VER}" \
+        --with-icu="${PREFIX}" \
+        | tee bootstrap.log 2>&1
+
+    ./b2 -q \
+        variant=release \
+        address-model="${ARCH}" \
+        architecture=x86 \
+        debug-symbols=off \
+        threading=multi \
+        runtime-link=shared \
+        link=shared \
+        toolset=gcc \
+        python="${PY_VER}" \
+        include="${INCLUDE_PATH}" \
+        linkflags="-L${LIBRARY_PATH}" \
+        --layout=system \
+        -j"${CPU_COUNT}" \
+        install | tee b2.log 2>&1
+fi
